@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:nti/page/task_page.dart';
+import 'package:nti/page/main_home_page.dart';
 
 void main() {
-  runApp(Nti());
+  runApp(const MyApp());
 }
 
-class Nti extends StatelessWidget {
-  const Nti({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: const TaskPage());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Bottom Navigation Example',
+      theme: ThemeData.dark(),
+      home: const MainPage(),
+    );
   }
 }

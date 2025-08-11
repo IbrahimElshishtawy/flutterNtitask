@@ -27,4 +27,14 @@ class AppStrings {
   static const String statusNormal = "Normal";
   static const String statusOverweight = "Overweight";
   static const String statusObese = "Obese";
+
+  // Result Page - English labels with En suffix
+  static const String statusUnderweightEn = "Underweight";
+  static const String statusNormalEn = "Normal";
+  static const String statusOverweightEn = "Overweight";
+  static const String statusObeseEn = "Obese";
+
+  static const String recalculateEn = "Recalculate";
+
+  static const String resultTitleEn = "BMI Result";
 }

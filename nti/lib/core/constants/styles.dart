@@ -23,17 +23,24 @@ class AppStyles {
     color: Colors.white,
   );
 
-  // BMI Result Number
-  static const TextStyle bmiNumberStyle = TextStyle(
+  // BMI Value Style (استخدمتها في ResultPage بدلاً من bmiNumberStyle)
+  static const TextStyle bmiValueStyle = TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.bold,
     color: AppColors.primaryBlue,
   );
 
-  // BMI Status Text
+  // BMI Status Text Style
   static const TextStyle bmiStatusStyle = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
+  );
+
+  // Tip Text Style (مستخدمة في ResultPage لعرض نصائح الصحة)
+  static const TextStyle tipTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textSecondary,
   );
 }

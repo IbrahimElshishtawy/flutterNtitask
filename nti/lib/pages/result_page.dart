@@ -7,164 +7,279 @@ import '../core/constants/styles.dart';
 
 import 'gender_page.dart';
 
-class ResultPage extends StatelessWidget {
+class ResultPage extends StatefulWidget {
   final BMIResultModel result;
-  ResultPage({super.key, required this.result});
+  const ResultPage({super.key, required this.result});
+
+  @override
+  State<ResultPage> createState() => _ResultPageState();
+}
+
+class _ResultPageState extends State<ResultPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // دالة لاختيار تدرج لوني بناءً على حالة الوزن
+  LinearGradient _getGradient(Color color) {
+    return LinearGradient(
+      colors: [
+        color.withOpacity(0.7),
+        color.withOpacity(0.4),
+        Colors.black.withOpacity(0.6),
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
+  }
+
+  // دالة لاختيار لون رئيسي حسب الحالة
+  Color _getMainColor() {
+    switch (widget.result.status) {
+      case AppStrings.statusUnderweight:
+        return Colors.lightBlueAccent;
+      case AppStrings.statusNormal:
+        return Colors.greenAccent.shade400;
+      case AppStrings.statusOverweight:
+        return Colors.orangeAccent.shade700;
+      default:
+        return Colors.redAccent.shade700;
+    }
+  }
+
+  // نصائح باللهجة المصرية مع شوية هزار
+  String _getFunnyTip() {
+    switch (widget.result.status) {
+      case AppStrings.statusUnderweight:
+        return "يا عم الحق نفسك.. خلّي أكلك متوازن، زي لما بتعمل فول وطعمية على الفطار!";
+      case AppStrings.statusNormal:
+        return "أنت تمام التمام! استمر في العيشة الحلوة دي، وماتنساش تتمشى شوية.";
+      case AppStrings.statusOverweight:
+        return "يا باشا، حاول تهدي شوية على الكنافة، والرياضة لازم تدخل جدولك.";
+      default:
+        return "الطبيب ينصحك تبقى ملتزم، بس إحنا معاك في كل خطوة، شد حيلك!";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    Color mainColor = _getMainColor();
+
     return Scaffold(
-      // خلفية متدرجة هادية
+      backgroundColor: Colors.black.withOpacity(0.85),
+
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFa8edea), Color(0xFFfed6e3)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        decoration: BoxDecoration(gradient: _getGradient(mainColor)),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // العنوان في الأعلى بشاشة عادية (بدون AppBar)
-                Text(
-                  AppStrings.yourBMIResult,
-                  style: AppStyles.titleStyle.copyWith(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple.shade700,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 3,
-                        color: Colors.deepPurple.shade200,
-                        offset: const Offset(1, 1),
-                      ),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 30),
-
-                // صندوق النتيجة بظل وحواف دائرية
-                Card(
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  color: Colors.white.withOpacity(0.9),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 32,
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // أيقونة جسم الإنسان مع تدرج لوني
+                  Container(
+                    height: 120,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      gradient: _getGradient(mainColor),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: mainColor.withOpacity(0.6),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
-                    child: Column(
-                      children: [
-                        Text(
-                          AppStrings.yourBMIIs,
-                          style: AppStyles.subtitleStyle.copyWith(
-                            fontSize: 22,
-                            color: Colors.grey[800],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16),
+                    child: Icon(
+                      Icons.accessibility_new,
+                      size: 90,
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                  ),
 
-                        // قيمة الـ BMI
-                        Text(
-                          result.bmiValue.toStringAsFixed(1),
-                          style: AppStyles.bmiValueStyle.copyWith(
-                            color: result.statusColor,
-                            fontSize: 72,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
+                  const SizedBox(height: 24),
 
-                        // الحالة مع أيقونة تعبيرية
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _statusIcon(result.status, result.statusColor),
-                            const SizedBox(width: 10),
-                            Text(
-                              result.status,
-                              style: AppStyles.subtitleStyle.copyWith(
-                                color: result.statusColor,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                              ),
+                  Text(
+                    "نتيجتك يا زعيم",
+                    style: AppStyles.titleStyle.copyWith(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: const [
+                        Shadow(
+                          color: Colors.black54,
+                          offset: Offset(1, 1),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  Card(
+                    elevation: 15,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    color: Colors.white.withOpacity(0.15),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 36,
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "الـ BMI بتاعك:",
+                            style: AppStyles.subtitleStyle.copyWith(
+                              fontSize: 22,
+                              color: Colors.white70,
                             ),
-                          ],
+                            textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          Text(
+                            widget.result.bmiValue.toStringAsFixed(1),
+                            style: AppStyles.bmiValueStyle.copyWith(
+                              color: mainColor,
+                              fontSize: 78,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  color: mainColor.withOpacity(0.7),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _statusIcon(widget.result.status, mainColor),
+                              const SizedBox(width: 12),
+                              Text(
+                                widget.result.status,
+                                style: AppStyles.subtitleStyle.copyWith(
+                                  color: mainColor,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black54,
+                                      offset: const Offset(1, 1),
+                                      blurRadius: 3,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          ResultBar(
+                            currentBMI: widget.result.bmiValue,
+                            bmi: widget.result.bmiValue,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 18,
+                    ),
+                    decoration: BoxDecoration(
+                      color: mainColor.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: mainColor.withOpacity(0.4),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
                         ),
+                      ],
+                    ),
+                    child: Text(
+                      _getFunnyTip(),
+                      style: AppStyles.tipTextStyle.copyWith(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        shadows: const [
+                          Shadow(
+                            color: Colors.black45,
+                            offset: Offset(1, 1),
+                            blurRadius: 2,
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
 
-                        const SizedBox(height: 24),
+                  const Spacer(),
 
-                        // شريط النتيجة
-                        ResultBar(
-                          currentBMI: result.bmiValue,
-                          bmi: result.bmiValue,
+                  CustomButton(
+                    text: "احسب تاني يا نجم",
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const GenderPage(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    buttonColor: mainColor,
+                    textStyle: AppStyles.buttonTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.white,
+                      shadows: const [
+                        Shadow(
+                          blurRadius: 6,
+                          color: Colors.black38,
+                          offset: Offset(1, 2),
                         ),
                       ],
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 40),
-
-                // صندوق النصيحة الصحية
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurple.shade50.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.deepPurple.shade100.withOpacity(0.6),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: _buildStatusTip(result.status),
-                ),
-
-                const Spacer(),
-
-                // زر إعادة الحساب مع تأثير ظل
-                CustomButton(
-                  text: AppStrings.recalculateEn,
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const GenderPage(),
-                      ),
-                      (route) => false,
-                    );
-                  },
-                  buttonColor: Colors.deepPurple.shade700,
-                  textStyle: AppStyles.buttonTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.white,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 4,
-                        color: Colors.black26,
-                        offset: const Offset(1, 2),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -172,7 +287,7 @@ class ResultPage extends StatelessWidget {
     );
   }
 
-  /// أيقونة تعبيرية حسب الحالة
+  // أيقونة تعبيرية حسب الحالة
   Widget _statusIcon(String status, Color color) {
     IconData iconData;
     switch (status) {
@@ -180,7 +295,7 @@ class ResultPage extends StatelessWidget {
         iconData = Icons.sentiment_dissatisfied;
         break;
       case AppStrings.statusNormal:
-        iconData = Icons.sentiment_satisfied_alt;
+        iconData = Icons.sentiment_very_satisfied;
         break;
       case AppStrings.statusOverweight:
         iconData = Icons.sentiment_neutral;
@@ -188,38 +303,13 @@ class ResultPage extends StatelessWidget {
       default:
         iconData = Icons.sentiment_very_dissatisfied;
     }
-    return Icon(iconData, color: color, size: 36);
-  }
-
-  /// نصائح صحية حسب الحالة
-  Widget _buildStatusTip(String status) {
-    String tip;
-    switch (status) {
-      case AppStrings.statusUnderweight:
-        tip =
-            "You are under the normal weight range. Consider a healthy diet rich in proteins and carbohydrates.";
-        break;
-      case AppStrings.statusNormal:
-        tip =
-            "You are within the normal weight range. Maintain your current lifestyle and keep exercising.";
-        break;
-      case AppStrings.statusOverweight:
-        tip =
-            "You are above the normal weight range. Try reducing calories and increasing physical activity.";
-        break;
-      default:
-        tip =
-            "You are in the obesity range. Please consult a healthcare professional for guidance.";
-    }
-
-    return Text(
-      tip,
-      style: AppStyles.tipTextStyle.copyWith(
-        fontSize: 16,
-        color: Colors.deepPurple.shade800,
-        fontWeight: FontWeight.w600,
-      ),
-      textAlign: TextAlign.center,
+    return Icon(
+      iconData,
+      color: color,
+      size: 40,
+      shadows: [
+        Shadow(color: Colors.black45, blurRadius: 5, offset: Offset(1, 1)),
+      ],
     );
   }
 }

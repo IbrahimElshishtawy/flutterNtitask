@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:nti/widget/custom_button.dart';
 import 'package:nti/widget/gender_card.dart';
@@ -19,13 +21,16 @@ class _GenderPageState extends State<GenderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // خلفية متدرجة جميلة
+      backgroundColor: Colors.black.withOpacity(0.9), // دارك مود مع شفافية
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF2196F3), Color(0xFF90CAF9)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [
+              Colors.deepPurple.shade900.withOpacity(0.9),
+              Colors.black87.withOpacity(0.9),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -34,15 +39,46 @@ class _GenderPageState extends State<GenderPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // أيقونة جسم الإنسان مع تدرج لوني
+                Container(
+                  height: 120,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: selectedGender == AppStrings.male
+                          ? [Colors.blue.shade800, Colors.blue.shade300]
+                          : selectedGender == AppStrings.female
+                          ? [Colors.pink.shade700, Colors.pink.shade300]
+                          : [Colors.grey.shade700, Colors.grey.shade500],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black54,
+                        blurRadius: 10,
+                        offset: Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.accessibility_new,
+                    size: 90,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
                 Text(
                   AppStrings.appTitle,
                   style: AppStyles.titleStyle.copyWith(
                     fontSize: 32,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    shadows: [
+                    shadows: const [
                       Shadow(
-                        color: Colors.black26,
+                        color: Colors.black45,
                         offset: Offset(1, 1),
                         blurRadius: 3,
                       ),
@@ -65,7 +101,6 @@ class _GenderPageState extends State<GenderPage> {
 
                 const SizedBox(height: 32),
 
-                // Gender Cards مع تحسين الظل والحواف الدائرية
                 Expanded(
                   child: Row(
                     children: [
@@ -77,7 +112,6 @@ class _GenderPageState extends State<GenderPage> {
                           onTap: () {
                             setState(() => selectedGender = AppStrings.male);
                           },
-                          // ممكن تعدل الكارد ليقبل لون خلفية عند الاختيار
                           selectedColor: Colors.blue.shade700,
                         ),
                       ),
@@ -100,7 +134,6 @@ class _GenderPageState extends State<GenderPage> {
 
                 const SizedBox(height: 40),
 
-                // زر الاستمرار
                 CustomButton(
                   text: AppStrings.continueText,
                   onPressed: selectedGender != null
@@ -114,13 +147,10 @@ class _GenderPageState extends State<GenderPage> {
                           );
                         }
                       : null,
-
-                  // ممكن تضيف لون مميز للزر هنا لو في CustomButton
                 ),
 
                 const SizedBox(height: 16),
 
-                // خيار "أفضل عدم الاختيار"
                 TextButton(
                   onPressed: () {
                     Navigator.push(

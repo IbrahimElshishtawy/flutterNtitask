@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 
 class BMIResultModel {
-  final double bmiValue; // قيمة BMI
-  final String status; // الحالة (Normal, Overweight...)
-  final Color statusColor; // اللون المناسب للحالة
+  final double bmiValue;
+  final String status;
+  final Color statusColor;
+  final double? bmrValue; // إضافة قيمة BMR (اختياري)
 
   BMIResultModel({
     required this.bmiValue,
     required this.status,
     required this.statusColor,
+    this.bmrValue,
   });
-
-  /// تحويل البيانات إلى نص (Debugging)
-  @override
-  String toString() {
-    return "BMI: $bmiValue, Status: $status, Color: $statusColor";
-  }
 }

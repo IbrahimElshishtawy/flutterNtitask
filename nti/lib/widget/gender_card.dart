@@ -14,6 +14,7 @@ class GenderCard extends StatelessWidget {
     required this.imagePath,
     required this.isSelected,
     required this.onTap,
+    required Color selectedColor,
   });
 
   @override

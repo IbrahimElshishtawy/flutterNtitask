@@ -1,42 +1,47 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import '../core/constants/styles.dart';
 import '../core/constants/colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback? onPressed; // السماح بـ null
+  final VoidCallback? onPressed; // السماح بأن يكون null لتعطيل الزر
+  final Color buttonColor;
+  final TextStyle? textStyle;
 
   const CustomButton({
     super.key,
     required this.text,
-    this.onPressed, // مش شرط تكون Required دلوقتي
+    this.onPressed,
+    this.buttonColor = AppColors.primaryBlue,
+    this.textStyle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bool isDisabled = onPressed == null;
+
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: onPressed == null
-              ? AppColors.primaryBlue.withOpacity(0.5) // لون أفتح عند التعطيل
-              : AppColors.primaryBlue,
+          backgroundColor: isDisabled
+              ? buttonColor.withOpacity(0.5)
+              : buttonColor,
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
+          elevation: isDisabled ? 0 : 4,
+          shadowColor: isDisabled ? Colors.transparent : Colors.black45,
         ),
-        onPressed: onPressed, // Flutter هيعطل الزر تلقائي لو null
+        onPressed: onPressed,
         child: Text(
           text,
-          style: AppStyles.buttonTextStyle.copyWith(
-            color: onPressed == null
-                ? Colors
-                      .white70 // نص أفتح لما يكون معطل
-                : Colors.white,
-          ),
+          style:
+              textStyle ??
+              AppStyles.buttonTextStyle.copyWith(
+                color: isDisabled ? Colors.white70 : Colors.white,
+              ),
         ),
       ),
     );

@@ -15,90 +15,134 @@ class GenderPage extends StatefulWidget {
 
 class _GenderPageState extends State<GenderPage> {
   String? selectedGender;
-  late final VoidCallback onPressed; // بدون علامة ?
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.appTitle), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              AppStrings.chooseGender,
-              style: AppStyles.titleStyle,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-
-            // Gender Cards
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: GenderCard(
-                      label: AppStrings.male,
-                      imagePath: "assets/images/male.png", // حط صورة مناسبة
-                      isSelected: selectedGender == AppStrings.male,
-                      onTap: () {
-                        setState(() => selectedGender = AppStrings.male);
-                      },
-                    ),
+      // خلفية متدرجة جميلة
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF2196F3), Color(0xFF90CAF9)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  AppStrings.appTitle,
+                  style: AppStyles.titleStyle.copyWith(
+                    fontSize: 32,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        offset: Offset(1, 1),
+                        blurRadius: 3,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: GenderCard(
-                      label: AppStrings.female,
-                      imagePath: "assets/images/female.png", // حط صورة مناسبة
-                      isSelected: selectedGender == AppStrings.female,
-                      onTap: () {
-                        setState(() => selectedGender = AppStrings.female);
-                      },
-                    ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  AppStrings.chooseGender,
+                  style: AppStyles.subtitleStyle.copyWith(
+                    fontSize: 20,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
                   ),
-                ],
-              ),
-            ),
+                  textAlign: TextAlign.center,
+                ),
 
-            const SizedBox(height: 24),
+                const SizedBox(height: 32),
 
-            // Continue Button
-            CustomButton(
-              text: AppStrings.continueText,
-              onPressed: selectedGender != null
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              InputPage(gender: selectedGender!),
+                // Gender Cards مع تحسين الظل والحواف الدائرية
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GenderCard(
+                          label: AppStrings.male,
+                          imagePath: "assets/man.jpg",
+                          isSelected: selectedGender == AppStrings.male,
+                          onTap: () {
+                            setState(() => selectedGender = AppStrings.male);
+                          },
+                          // ممكن تعدل الكارد ليقبل لون خلفية عند الاختيار
+                          selectedColor: Colors.blue.shade700,
                         ),
-                      );
-                    }
-                  : null,
-            ),
-
-            const SizedBox(height: 12),
-
-            // Prefer not to choose
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const InputPage(gender: "Not specified"),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: GenderCard(
+                          label: AppStrings.female,
+                          imagePath:
+                              "assets/24684754-levantamento-de-peso-mulheres-silhueta-gratis-vetor.jpg",
+                          isSelected: selectedGender == AppStrings.female,
+                          onTap: () {
+                            setState(() => selectedGender = AppStrings.female);
+                          },
+                          selectedColor: Colors.pink.shade400,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-              child: Text(
-                AppStrings.preferNotToChoose,
-                style: AppStyles.subtitleStyle,
-              ),
+                ),
+
+                const SizedBox(height: 40),
+
+                // زر الاستمرار
+                CustomButton(
+                  text: AppStrings.continueText,
+                  onPressed: selectedGender != null
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  InputPage(gender: selectedGender!),
+                            ),
+                          );
+                        }
+                      : null,
+
+                  // ممكن تضيف لون مميز للزر هنا لو في CustomButton
+                ),
+
+                const SizedBox(height: 16),
+
+                // خيار "أفضل عدم الاختيار"
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const InputPage(gender: "Not specified"),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    AppStrings.preferNotToChoose,
+                    style: AppStyles.subtitleStyle.copyWith(
+                      color: Colors.white70,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

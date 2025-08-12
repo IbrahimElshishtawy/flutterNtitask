@@ -8,7 +8,6 @@ import '../core/constants/styles.dart';
 import '../core/utils/bmi_calculator.dart';
 import '../core/utils/validators.dart';
 import '../models/bmi_result_model.dart';
-
 import '../core/constants/colors.dart';
 
 class InputPage extends StatefulWidget {
@@ -26,21 +25,38 @@ class _InputPageState extends State<InputPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.appTitle), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      appBar: AppBar(
+        title: const Text(AppStrings.appTitle),
+        centerTitle: true,
+        elevation: 4,
+        backgroundColor: AppColors.primaryBlue,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Gender Info
             Text(
               "${AppStrings.chooseHeightWeight}\nGender: ${widget.gender}",
-              style: AppStyles.titleStyle,
+              style: AppStyles.titleStyle.copyWith(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 30),
 
-            // Height Slider
+            // Height Section
+            Text(
+              "${AppStrings.height}: ${_height.toStringAsFixed(1)} cm",
+              style: AppStyles.subtitleStyle.copyWith(
+                fontSize: 20,
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
             HeightSlider(
               height: _height,
               onChanged: (value) {
@@ -49,9 +65,18 @@ class _InputPageState extends State<InputPage> {
                 });
               },
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 30),
 
-            // Weight Slider
+            // Weight Section
+            Text(
+              "${AppStrings.weight}: ${_weight.toStringAsFixed(1)} kg",
+              style: AppStyles.subtitleStyle.copyWith(
+                fontSize: 20,
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
             WeightSlider(
               weight: _weight,
               onChanged: (value) {
@@ -60,13 +85,12 @@ class _InputPageState extends State<InputPage> {
                 });
               },
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 40),
 
             // Calculate BMI Button
             CustomButton(
               text: AppStrings.calculateBMI,
               onPressed: () {
-                // التحقق من القيم
                 final heightError = Validators.validateHeight(
                   _height.toString(),
                 );
@@ -81,19 +105,22 @@ class _InputPageState extends State<InputPage> {
                         heightError ?? weightError ?? "Invalid input",
                       ),
                       backgroundColor: AppColors.obese,
+                      behavior: SnackBarBehavior.floating,
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                     ),
                   );
                   return;
                 }
 
-                // حساب BMI
                 double bmiValue = BMICalculator.calculateBMI(
                   weight: _weight,
                   height: _height,
                 );
                 String status = BMICalculator.getBMIStatus(bmiValue);
 
-                // اختيار اللون
                 Color statusColor;
                 switch (status) {
                   case AppStrings.statusUnderweight:
@@ -115,7 +142,6 @@ class _InputPageState extends State<InputPage> {
                   statusColor: statusColor,
                 );
 
-                // الانتقال لصفحة النتيجة
                 Navigator.push(
                   context,
                   MaterialPageRoute(

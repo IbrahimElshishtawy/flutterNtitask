@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:flutter/material.dart';
 import 'package:nti/core/constants/colors.dart';
 import 'package:nti/core/constants/strings.dart';
@@ -9,16 +11,36 @@ import 'package:nti/pages/input_page.dart';
 
 class InputPage extends StatefulWidget {
   final String gender;
-  const InputPage({super.key, required this.gender});
+  const InputPage({Key? key, required this.gender}) : super(key: key);
 
   @override
   State<InputPage> createState() => _InputPageState();
 }
 
-class _InputPageState extends State<InputPage> {
+class _InputPageState extends State<InputPage>
+    with SingleTickerProviderStateMixin {
   double _height = 170;
   double _weight = 65;
   int _age = 25;
+
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    // تحكم الأنيميشن
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   void _onHeightChanged(double value) {
     setState(() {
@@ -99,6 +121,7 @@ class _InputPageState extends State<InputPage> {
       onWeightChanged: _onWeightChanged,
       onAgeChanged: _onAgeChanged,
       onCalculatePressed: _onCalculatePressed,
+      animationController: _animationController,
     );
   }
 }

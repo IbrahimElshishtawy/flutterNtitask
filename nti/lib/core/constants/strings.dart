@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 class AppStrings {
   // App Title
   static const String appTitle = "BMI Calculator";
@@ -37,4 +39,6 @@ class AppStrings {
   static const String recalculateEn = "Recalculate";
 
   static const String resultTitleEn = "BMI Result";
+
+  static var gender;
 }

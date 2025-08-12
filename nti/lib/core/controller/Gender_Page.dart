@@ -1,5 +1,9 @@
+// ignore_for_file: file_names, unused_import
+
 import 'package:flutter/material.dart';
-import 'package:nti/core/controller/input_page.dart';
+import 'package:nti/core/controller/Input_Page.dart';
+import 'package:nti/core/controller/input_page.dart' hide InputPage;
+
 import 'package:nti/pages/gender_page.dart';
 
 class GenderPage extends StatefulWidget {

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:nti/widget/custom_button.dart';
 import 'package:nti/widget/result_bar.dart';

@@ -1,22 +1,22 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:nti/widget/custom_button.dart';
 import 'package:nti/widget/gender_card.dart';
 import '../core/constants/strings.dart';
 import '../core/constants/styles.dart';
 
-import 'input_page.dart';
+typedef GenderSelectedCallback = void Function(String? gender);
 
-class GenderPage extends StatefulWidget {
-  const GenderPage({super.key});
+class GenderSelectionView extends StatelessWidget {
+  final String? selectedGender;
+  final GenderSelectedCallback onGenderSelected;
+  final VoidCallback onContinuePressed;
 
-  @override
-  State<GenderPage> createState() => _GenderPageState();
-}
-
-class _GenderPageState extends State<GenderPage> {
-  String? selectedGender;
+  const GenderSelectionView({
+    super.key,
+    required this.selectedGender,
+    required this.onGenderSelected,
+    required this.onContinuePressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class _GenderPageState extends State<GenderPage> {
                       end: Alignment.bottomCenter,
                     ),
                     shape: BoxShape.circle,
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black54,
                         blurRadius: 10,
@@ -109,9 +109,7 @@ class _GenderPageState extends State<GenderPage> {
                           label: AppStrings.male,
                           imagePath: "assets/man.jpg",
                           isSelected: selectedGender == AppStrings.male,
-                          onTap: () {
-                            setState(() => selectedGender = AppStrings.male);
-                          },
+                          onTap: () => onGenderSelected(AppStrings.male),
                           selectedColor: Colors.blue.shade700,
                         ),
                       ),
@@ -122,9 +120,7 @@ class _GenderPageState extends State<GenderPage> {
                           imagePath:
                               "assets/24684754-levantamento-de-peso-mulheres-silhueta-gratis-vetor.jpg",
                           isSelected: selectedGender == AppStrings.female,
-                          onTap: () {
-                            setState(() => selectedGender = AppStrings.female);
-                          },
+                          onTap: () => onGenderSelected(AppStrings.female),
                           selectedColor: Colors.pink.shade400,
                         ),
                       ),
@@ -136,31 +132,13 @@ class _GenderPageState extends State<GenderPage> {
 
                 CustomButton(
                   text: AppStrings.continueText,
-                  onPressed: selectedGender != null
-                      ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  InputPage(gender: selectedGender!),
-                            ),
-                          );
-                        }
-                      : null,
+                  onPressed: selectedGender != null ? onContinuePressed : null,
                 ),
 
                 const SizedBox(height: 16),
 
                 TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const InputPage(gender: "Not specified"),
-                      ),
-                    );
-                  },
+                  onPressed: () => onGenderSelected(null),
                   child: Text(
                     AppStrings.preferNotToChoose,
                     style: AppStyles.subtitleStyle.copyWith(

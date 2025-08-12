@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nti/pages/gender_page.dart';
+import 'package:nti/core/controller/Gender_Page.dart';
 
 void main() {
   runApp(const BMICalculatorApp());
